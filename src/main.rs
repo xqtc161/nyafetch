@@ -2,29 +2,53 @@
 use std::process::Command;
 use std::str;
 
-pub const CAT: &str = "\
- /| ､
-(°､ ｡ 7
- |､ ~ヽ
- じしf_,)〳 
-";
+use ansi_term::Color;
+use ansi_term::Style;
+
+//pub const CAT: &str = "\
+// /| ､
+//(°､ ｡ 7
+// |､ ~ヽ
+// じしf_,)〳
+//";
+
+pub const CAT_0: &str = "               ";
 pub const CAT_1: &str = " /| ､          ";
 pub const CAT_2: &str = "(°､ ｡ 7        ";
 pub const CAT_3: &str = " |､ ~ヽ        ";
 pub const CAT_4: &str = " じしf_,)〳    ";
-pub const CAT_PLACE: &str = "               ";
-//#[derive(Parser, Debug)]
-//#[command(author, version, about, long_about = None)]
-//struct Args {
-//    #[arg(short)]
-//    message: Option<String>,
-//}
 
 fn main() {
-    println!("{}OS:     {}", CAT_1, get_os());
-    println!("{}Host:   {}", CAT_2, get_host());
-    println!("{}Kernel: {}", CAT_3, get_kernel());
-    println!("{}RAM:    {}", CAT_4, get_ram_info());
+    println!(
+        "{}{}     {}",
+        Color::Yellow.paint(CAT_0).to_string(),
+        format_category("OS:"),
+        Color::White.paint(get_os()).to_string()
+    );
+    println!(
+        "{}{}   {}",
+        Color::Yellow.paint(CAT_1).to_string(),
+        format_category("Host:"),
+        Color::White.paint(get_host()).to_string()
+    );
+    println!(
+        "{}{} {}",
+        Color::Yellow.paint(CAT_2).to_string(),
+        format_category("Kernel:"),
+        Color::White.paint(get_kernel()).to_string()
+    );
+    println!(
+        "{}{}    {}",
+        Color::Yellow.paint(CAT_3).to_string(),
+        format_category("RAM:"),
+        Color::White.paint(get_ram_info()).to_string()
+    );
+    println!(
+        "{}{} {}",
+        Color::Yellow.paint(CAT_4).to_string(),
+        format_category("Uptime:"),
+        Color::White.paint(get_uptime()).to_string()
+    );
 }
 
 fn get_kernel() -> String {
@@ -46,7 +70,6 @@ fn get_ram_info() -> String {
 
     let ram_result = str::from_utf8(&output.stdout).expect("Failed to convert output to string");
 
-    // Extracting total RAM information
     let ram_line = ram_result.lines().skip(1).next().unwrap_or_default();
     let total_ram = ram_line.split_whitespace().nth(1).unwrap_or_default();
     let used_ram = ram_line.split_whitespace().nth(2).unwrap_or_default();
@@ -73,9 +96,17 @@ fn get_host() -> String {
 
 fn get_uptime() -> String {
     let output = Command::new("uptime")
+        .arg("-p")
         .output()
         .expect("Failed to execute command");
-    let uptime_result = str::from_utf8(&output.stdout).expect("Failed to convert output to string");
-    let uptime = uptime_result.trim_end();
-    uptime.to_string()
+    let mut uptime_result =
+        str::from_utf8(&output.stdout).expect("Failed to convert output to string");
+    let mut uptime = uptime_result.replace("up", "");
+    uptime.trim().to_string()
+}
+
+fn format_category(mut input: &str) -> String {
+    let underline_input = Style::new().underline().paint(input).to_string();
+    let bold_underline_input = Style::new().bold().paint(underline_input);
+    bold_underline_input.to_string()
 }

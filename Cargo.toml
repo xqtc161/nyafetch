@@ -2,7 +2,7 @@
 name = "nyafetch"
 version = "1.0.0"
 edition = "2021"
-authors = ["xqtc <xqtc@tutanota.com"]
+authors = ["xqtc <xqtc@tutanota.com>"]
 description = "Minimalistic system fetch utility with a cute cat. Written in Rust."
 homepage = "https://github.com/xqtc161/nyafetch"
 repository = "https://github.com/xqtc161/nyafetch"
@@ -11,3 +11,5 @@ keywords = ["fetch"]
 categories = ["command-line-utilities"]
 readme = "README.md"
 
+[dependencies]
+ansi_term = "0.12.1"
