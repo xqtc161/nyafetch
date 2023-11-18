@@ -99,13 +99,13 @@ fn get_uptime() -> String {
         .arg("-p")
         .output()
         .expect("Failed to execute command");
-    let mut uptime_result =
+    let uptime_result =
         str::from_utf8(&output.stdout).expect("Failed to convert output to string");
-    let mut uptime = uptime_result.replace("up", "");
+    let uptime = uptime_result.replace("up", "");
     uptime.trim().to_string()
 }
 
-fn format_category(mut input: &str) -> String {
+fn format_category(input: &str) -> String {
     let underline_input = Style::new().underline().paint(input).to_string();
     let bold_underline_input = Style::new().bold().paint(underline_input);
     bold_underline_input.to_string()
